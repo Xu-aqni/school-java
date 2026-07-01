@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Pannello Amministratore</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h1 class="text-center mb-5">Pannello Amministratore</h1>
+
+    <div class="row">
+        <!-- Form Inserimento Nuovo Film -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Aggiungi Nuovo Film</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/film/add}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Titolo</label>
+                            <input type="text" class="form-control" name="titolo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Regista</label>
+                            <input type="text" class="form-control" name="regista" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Genere</label>
+                            <input type="text" class="form-control" name="genere" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Salva Film</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Inserimento Nuova Programmazione (Film in Sala) -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">Aggiungi Programmazione</h4>
+                </div>
+                <div class="card-body">
+                    <form th:action="@{/programmazione/add}" method="post">
+                        <div class="mb-3">
+                            <label class="form-label">ID Cinema</label>
+                            <input type="number" class="form-control" name="cinema.id" placeholder="Es. 1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">ID Film</label>
+                            <input type="number" class="form-control" name="film.id" placeholder="Es. 1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Data (YYYY-MM-DD)</label>
+                            <input type="date" class="form-control" name="data" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Prezzo Biglietto (€)</label>
+                            <input type="number" step="0.01" class="form-control" name="prezzo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Posti Totali/Rimanenti</label>
+                            <input type="number" class="form-control" name="postiRimanenti" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning w-100">Salva Programmazione</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="text-center mt-3">
+        <a th:href="@{/film}" class="btn btn-outline-dark">Vai al sito lato utente</a>
+    </div>
+</div>
+
+</body>
+</html>

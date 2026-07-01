@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Dettaglio Film</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <!-- Scheda centrata nella pagina (mx-auto) -->
+    <div class="card mx-auto shadow" style="max-width: 600px;">
+        <div class="card-header bg-dark text-white text-center">
+            <h2 th:text="${film.titolo}">Titolo</h2>
+        </div>
+        <div class="card-body">
+            <p><strong>Regista:</strong> <span th:text="${film.regista}"></span></p>
+            <p><strong>Genere:</strong> <span th:text="${film.genere}"></span></p>
+
+            <hr>
+            <h4 class="text-center mb-3">Prenota il tuo posto</h4>
+
+            <!-- Form di Prenotazione -->
+            <form th:action="@{/prenotazioni/effettua}" method="post">
+                
+                <!-- Selezione del Cinema e Data -->
+                <div class="mb-3">
+                    <label for="idFilmInSala" class="form-label">Scegli Cinema e Data:</label>
+                    <select class="form-select" id="idFilmInSala" name="idFilmInSala" required>
+                        <option value="" disabled selected>-- Seleziona una proiezione --</option>
+                        <!-- Cicla le proiezioni disponibili per questo film -->
+                        <option th:each="p : ${proiezioni}" 
+                                th:value="${p.id}" 
+                                th:text="${p.cinema.nomeCinema} + ' - ' + ${p.data} + ' (' + ${p.postiRimanenti} + ' posti rimasti) - €' + ${p.prezzo}">
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Nome Prenotazione -->
+                <div class="mb-3">
+                    <label for="nome" class="form-label">Nome Prenotazione:</label>
+                    <input type="text" class="form-control" id="nome" name="nome" placeholder="Es. Mario Rossi" required>
+                </div>
+
+                <!-- Numero Posti -->
+                <div class="mb-3">
+                    <label for="posti" class="form-label">Numero Posti:</label>
+                    <input type="number" class="form-control" id="posti" name="posti" min="1" value="1" required>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success">Conferma Prenotazione</button>
+                    <a th:href="@{/film}" class="btn btn-secondary">Torna all'elenco</a>
+                </div>
+            </form>
+            
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

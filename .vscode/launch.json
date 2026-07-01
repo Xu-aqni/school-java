@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-PrenotazioniFilmApplication<prenotazioniFilm>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.esercizi.prenotazioniFilm.PrenotazioniFilmApplication",
+            "projectName": "prenotazioniFilm",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

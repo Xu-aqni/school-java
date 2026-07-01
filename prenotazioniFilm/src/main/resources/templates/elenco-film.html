@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Cinema - Elenco Film</title>
+    <!-- Inclusione Bootstrap per lo stile -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Film in Programmazione</h1>
+    
+    <div class="row">
+        <!-- Ciclo for di Thymeleaf: crea una card per ogni film presente nel DB -->
+        <div class="col-md-4 mb-4" th:each="film : ${films}">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${film.titolo}">Titolo Film</h5>
+                    <h6 class="card-subtitle mb-2 text-muted" th:text="${film.regista}">Regista</h6>
+                    <p class="card-text">
+                        <strong>Genere:</strong> <span th:text="${film.genere}">Genere</span>
+                    </p>
+                    <!-- Link al dettaglio del film (Punto 2) -->
+                    <a th:href="@{/film/{id}(id=${film.id})}" class="btn btn-primary w-100">Vedi Dettagli e Prenota</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
