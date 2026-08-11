@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifica Transazione - Budget App</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+    <h1>Modifica transazione</h1>
+    <p class="error" th:if="${error}" th:text="${error}"></p>
+    <form method="post" th:action="@{'/transactions/' + ${transaction.id}}" enctype="multipart/form-data">
+
+        <label>Descrizione</label>
+        <input type="text" name="description" required th:value="${transaction.description}">
+
+        <label>Data</label>
+        <input type="date" name="date" required th:value="${transaction.date}">
+
+        <label>Importo (&euro;)</label>
+        <input type="number" step="0.01" min="0.01" name="amount" required th:value="${transaction.amount}">
+
+        <label>Categoria</label>
+        <select name="category" required>
+            <option th:each="c : ${categories}" th:value="${c.label}" th:text="${c.label}"
+                    th:selected="${c == transaction.category}"></option>
+        </select>
+
+        <label>Nuova ricevuta (lasciare vuoto per non modificare)</label>
+        <input type="file" name="receipt" accept="image/*,application/pdf">
+        <p style="font-size:13px;margin-top:6px;" th:if="${transaction.receipt != null}">
+            Ricevuta attuale: <a th:href="@{'/' + ${transaction.receipt}}" target="_blank">Vedi file</a>
+        </p>
+
+        <button type="submit">Salva modifiche</button>
+    </form>
+</div>
+</body>
+</html>

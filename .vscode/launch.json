@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "BudgetAppApplication",
+            "request": "launch",
+            "mainClass": "com.budgetapp.BudgetAppApplication",
+            "projectName": ""
+        },
+        {
+            "type": "java",
+            "name": "BudgetAppApplication",
+            "request": "launch",
+            "mainClass": "com.budgetapp.BudgetAppApplication",
+            "projectName": "budget-app"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-PrenotazioniFilmApplication<prenotazioniFilm>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
