@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Transazioni - Budget App</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+    <h1>Le mie transazioni</h1>
+    <a class="btn" th:href="@{/transactions/create}">+ Nuova transazione</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Descrizione</th><th>Data</th><th>Categoria</th><th>Importo</th><th>Ricevuta</th><th>Azioni</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="t : ${transactions}">
+            <td th:text="${t.description}"></td>
+            <td th:text="${t.date}"></td>
+            <td th:text="${t.category.label}"></td>
+            <td>&euro; <span th:text="${#numbers.formatDecimal(t.amount, 1, 'POINT', 2, 'COMMA')}"></span></td>
+            <td>
+                <a th:if="${t.receipt != null}" th:href="@{'/' + ${t.receipt}}" target="_blank">Vedi</a>
+                <span th:if="${t.receipt == null}">-</span>
+            </td>
+            <td>
+                <a th:href="@{'/transactions/' + ${t.id} + '/edit'}">Modifica</a>
+                &nbsp;|&nbsp;
+                <form method="post" th:action="@{'/transactions/' + ${t.id} + '/delete'}" style="display:inline"
+                      onsubmit="return confirm('Confermi la cancellazione?');">
+                    <button type="submit" class="btn-danger" style="padding:2px 8px;margin:0;font-size:12px;">Elimina</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(transactions)}"><td colspan="6">Nessuna transazione registrata.</td></tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

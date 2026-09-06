@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "QuizStoriaApplication",
+            "request": "launch",
+            "mainClass": "com.esercitazione.quizStoria.QuizStoriaApplication",
+            "projectName": "quizStoria"
+        },
+        {
+            "type": "java",
+            "name": "test",
+            "request": "launch",
+            "mainClass": "test",
+            "projectName": ""
+        },
+        {
+            "type": "java",
             "name": "BudgetAppApplication",
             "request": "launch",
             "mainClass": "com.budgetapp.BudgetAppApplication",

@@ -1,0 +1,14 @@
+<nav xmlns:th="http://www.thymeleaf.org" th:fragment="nav">
+    <a href="/dashboard">Budget App</a>
+    <th:block th:if="${session.user_id != null}">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/transactions">Transazioni</a>
+        <a href="/transactions/create">Nuova Transazione</a>
+        <a href="/profile">Profilo</a>
+        <a href="/logout">Logout</a>
+    </th:block>
+    <th:block th:unless="${session.user_id != null}">
+        <a href="/login">Login</a>
+        <a href="/register">Registrati</a>
+    </th:block>
+</nav>

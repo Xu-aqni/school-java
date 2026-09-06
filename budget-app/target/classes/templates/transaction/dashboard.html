@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard - Budget App</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+    <h1>Dashboard - <span th:text="${summary.month}"></span></h1>
+
+    <div class="summary-cards">
+        <div class="card card-income">
+            <h3>Entrate</h3>
+            <p>&euro; <span th:text="${#numbers.formatDecimal(summary.income, 1, 'POINT', 2, 'COMMA')}"></span></p>
+        </div>
+        <div class="card card-expenses">
+            <h3>Uscite</h3>
+            <p>&euro; <span th:text="${#numbers.formatDecimal(summary.expenses, 1, 'POINT', 2, 'COMMA')}"></span></p>
+        </div>
+        <div class="card card-balance">
+            <h3>Bilancio</h3>
+            <p>&euro; <span th:text="${#numbers.formatDecimal(summary.balance, 1, 'POINT', 2, 'COMMA')}"></span></p>
+        </div>
+    </div>
+
+    <h2 style="margin-top:30px">Spese per categoria (mese corrente)</h2>
+    <table>
+        <thead>
+        <tr><th>Categoria</th><th>Totale</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${summary.byCategory}">
+            <td th:text="${row.category}"></td>
+            <td>&euro; <span th:text="${#numbers.formatDecimal(row.total, 1, 'POINT', 2, 'COMMA')}"></span></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(summary.byCategory)}"><td colspan="2">Nessuna transazione questo mese.</td></tr>
+        </tbody>
+    </table>
+
+    <h2 style="margin-top:30px">Ultime transazioni</h2>
+    <table>
+        <thead>
+        <tr><th>Descrizione</th><th>Data</th><th>Categoria</th><th>Importo</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="t, iter : ${transactions}" th:if="${iter.index < 5}">
+            <td th:text="${t.description}"></td>
+            <td th:text="${t.date}"></td>
+            <td th:text="${t.category.label}"></td>
+            <td>&euro; <span th:text="${#numbers.formatDecimal(t.amount, 1, 'POINT', 2, 'COMMA')}"></span></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(transactions)}"><td colspan="4">Nessuna transazione registrata.</td></tr>
+        </tbody>
+    </table>
+    <a class="btn" th:href="@{/transactions}">Vedi tutte le transazioni</a>
+</div>
+</body>
+</html>

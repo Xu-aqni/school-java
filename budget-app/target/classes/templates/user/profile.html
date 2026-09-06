@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profilo - Budget App</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{fragments/nav :: nav}"></div>
+<div class="container">
+    <h1>Il mio profilo</h1>
+    <p class="success" th:if="${success}" th:text="${success}"></p>
+    <form method="post" th:action="@{/profile}">
+        <label>Nome</label>
+        <input type="text" name="name" required th:value="${user.name}">
+
+        <label>Email</label>
+        <input type="email" name="email" required th:value="${user.email}">
+
+        <button type="submit">Salva modifiche</button>
+    </form>
+</div>
+</body>
+</html>
