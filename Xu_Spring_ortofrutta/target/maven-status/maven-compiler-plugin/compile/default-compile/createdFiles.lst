@@ -1,0 +1,5 @@
+com\example\demo\service\ProdottoService.class
+com\example\demo\DemoApplication.class
+com\example\demo\repository\ProdottoRepository.class
+com\example\demo\controller\ProdottoController.class
+com\example\demo\entity\ProdottoOrtofrutticolo.class
