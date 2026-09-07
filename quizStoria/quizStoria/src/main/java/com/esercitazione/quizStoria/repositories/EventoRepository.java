@@ -2,6 +2,8 @@ package com.esercitazione.quizStoria.repositories;
 
 import com.esercitazione.quizStoria.entities.Evento;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,5 +24,19 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
 
     Optional<Evento> findFirstByOrderByAnnoAsc();
 
-    long countByCategoria(String categoria);
+    //long countByCategoria(String categoria);
+
+    @Query("SELECT e FROM Evento e WHERE " +
+           "(:anno IS NULL OR e.anno = :anno) AND " +
+           "(:titolo IS NULL OR LOWER(e.titolo) LIKE LOWER(CONCAT('%', :titolo, '%'))) AND " +
+           "(:luogo IS NULL OR LOWER(e.luogo) LIKE LOWER(CONCAT('%', :luogo, '%'))) AND " +
+           "(:civilta IS NULL OR LOWER(e.civilta) LIKE LOWER(CONCAT('%', :civilta, '%'))) AND " +
+           "(:categoria IS NULL OR LOWER(e.categoria) = LOWER(:categoria))")
+    List<Evento> searchEvents(
+        @Param("anno") Integer anno,
+        @Param("titolo") String titolo,
+        @Param("luogo") String luogo,
+        @Param("civilta") String civilta,
+        @Param("categoria") String categoria
+    );
 }

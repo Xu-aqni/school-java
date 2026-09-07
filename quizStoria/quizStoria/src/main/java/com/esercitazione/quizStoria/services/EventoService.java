@@ -2,6 +2,7 @@ package com.esercitazione.quizStoria.services;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.esercitazione.quizStoria.entities.Evento;
 import com.esercitazione.quizStoria.repositories.EventoRepository;
@@ -56,8 +57,14 @@ public class EventoService {
         return repository.count();
     }
 
-    public Long getNumberOfEventsByCategory(String categoria){
-        return repository.countByCategoria(categoria);
+    public List<Evento> searchEvents(Integer anno, String titolo, String luogo, String civilta, String categoria) {
+
+        String checkedTitle = StringUtils.hasText(titolo) ? titolo.trim() : null;
+        String checkedPlace = StringUtils.hasText(luogo) ? luogo.trim() : null;
+        String checkedCivilization = StringUtils.hasText(civilta) ? civilta.trim() : null;
+        String checkedCategory = StringUtils.hasText(categoria) ? categoria.trim() : null;
+
+        return repository.searchEvents(anno, checkedTitle, checkedPlace, checkedCivilization, checkedCategory);
     }
 
     @Transactional 

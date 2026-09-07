@@ -9,8 +9,10 @@ import com.esercitazione.quizStoria.services.EventoService;
 
 import java.util.List;
 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController 
-@RequestMapping("/api/events")
+@RequestMapping("/quiz")
 public class EventoController {
     
     private final EventoService service;
@@ -27,76 +29,95 @@ public class EventoController {
         this.service = service;
     }
 
-    @GetMapping
-    public List<Evento> getAllEvents(){
-        return service.getAllEvents();
+    @GetMapping 
+    public String getStartingPage(){
+        return "index";
+    }
+
+    @GetMapping("/events")
+    public String getAllEvents(Model model){
+        List<Evento> events = service.getAllEvents();
+        Long eventCount = service.getNumberOfEvents();
+        
+        model.addAttribute("events", events);
+        model.addAttribute("eventCount", eventCount);
+        return "eventi";
     }
     
-    @GetMapping("/{id}")
-    public Evento getEventById(@PathVariable Long id){
-        return service.getEventById(id);
+    @GetMapping("/events/{id}")
+    public String getEventById(@PathVariable Long id, Model model){
+        Evento event = service.getEventById(id);
+        model.addAttribute("event", event);
+        return "dettagliEvento";
     }
 
-    @GetMapping("/oldest")
-    public Evento getOldestEvent(){
-        return service.getOldestEvent();
+    @GetMapping("/events/oldest")
+    public String getOldestEvent(Model model){
+        Evento event = service.getOldestEvent();
+        model.addAttribute("event", event);
+        return "dettagliEvento";
     }
 
-    @GetMapping("/newest")
-    public Evento getNewestEvent(){
-        return service.getNewestEvent();
+    @GetMapping("/events/newest")
+    public String getNewestEvent(Model model){
+        Evento event = service.getNewestEvent();
+        model.addAttribute("event", event);
+        return "dettagliEvento";
     }
 
-    @GetMapping("/total")
-    public Long getNumberOfEvents(){
+    /*
+    @GetMapping("/events/total")
+    public Long getNumberOfEvents(Model model){
         return service.getNumberOfEvents();
     }
+    */
 
-    @GetMapping("/total/{categoria}")
+    /* 
+    @GetMapping("/events/total/{categoria}")
     public Long getNumberOfEventsByCategory(@PathVariable String categoria){
         return service.getNumberOfEventsByCategory(categoria);
     }
+    */
 
-    @GetMapping("/search")
-    public List<Evento> searchEvent(
+    @GetMapping("/events/search")
+    public String searchEvent(
         @RequestParam(required = false) Integer anno,
         @RequestParam(required = false) String titolo,
         @RequestParam(required = false) String luogo,
         @RequestParam(required = false) String civilta,
-        @RequestParam(required = false) String categoria){
+        @RequestParam(required = false) String categoria,
+        Model model){
         
-        List<Evento> eventi;
+        List<Evento> events = service.searchEvents(anno, titolo, luogo, civilta, categoria);
         
         if(categoria != null && !categoria.isBlank()){
-            eventi = service.getEventByCategory(categoria);
+            events = service.getEventByCategory(categoria);
         } else {
-            eventi = service.getAllEvents();
+            events = service.getAllEvents();
         }
 
-        return eventi.stream()
-            .filter(e -> titolo == null || titolo.isBlank() || 
-                    e.getTitolo().toLowerCase().contains(titolo.toLowerCase()))
-            .filter(e -> luogo == null || luogo.isBlank() || 
-                    e.getLuogo().toLowerCase().contains(luogo.toLowerCase()))
-            .filter(e -> civilta == null || civilta.isBlank() || 
-                    e.getCivilta().toLowerCase().contains(civilta.toLowerCase()))
-            .filter(e -> anno == null || e.getAnno().equals(anno))
-                    .toList(); 
+        model.addAttribute("events", events);
+        model.addAttribute("eventCount", events.size());
+
+        return "eventi";
     }
 
-    @PostMapping 
-    public void createEvent(@RequestBody Evento event){
+    @PostMapping("/events")
+    public String createEvent(@ModelAttribute Evento event){
         service.createEvent(event);
+        return "redirect:/eventi";
     }
 
-    @PutMapping ("/{id}")
-    public void updateEvent(@PathVariable Long id,
-                            @RequestBody Evento event){
+    @PostMapping ("/events/{id}")
+    public String updateEvent(@PathVariable Long id,
+                            @ModelAttribute Evento event){
         service.updateEvent(id, event);
+        return "redirect:/eventi";
     }
 
-    @DeleteMapping("/{id}")
-    public void deleteEvent(@PathVariable Long id){
+    @PostMapping("/events/{id}/delete")
+    public String deleteEvent(@PathVariable Long id){
         service.deleteEvent(id);
+        return "redirect:/eventi";
     }
 }
