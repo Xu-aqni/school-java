@@ -32,7 +32,7 @@ public class Domanda {
     @JoinColumn(name = "id")
     private Evento event;
 
-    @ManyToOne 
+    //@ManyToOne 
     //risposta della domanda
 
     public enum QuestionType {

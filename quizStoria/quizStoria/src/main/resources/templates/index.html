@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz & Historical Events Master</title>
+  <!-- Pico CSS CDN -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="container">
+    <ul>
+      <li><strong>📜 Quiz & Event Manager</strong></li>
+    </ul>
+    <ul>
+      <li><a href="/quiz/events" role="button" class="outline">View All Events</a></li>
+    </ul>
+  </nav>
+
+  <main class="container">
+    
+    <!-- Hero / Welcome Banner -->
+    <article>
+      <header>
+        <p><mark>Welcome</mark></p>
+        <h1>Historical Event Hub</h1>
+      </header>
+      <p>Explore historical events, test your knowledge, or manage the database directly.</p>
+      
+      <div class="grid">
+        <a href="/quiz/events" role="button">Explore All Events</a>
+        <a href="/quiz/events/oldest" role="button" class="secondary">Oldest Event</a>
+        <a href="/quiz/events/newest" role="button" class="contrast">Newest Event</a>
+      </div>
+    </article>
+
+    <!-- Search Events Card -->
+    <article>
+      <h2>Search Events</h2>
+      <p><small>Filter by year, title, location, civilization, or category.</small></p>
+
+      <form action="/quiz/events/search" method="GET">
+        <div class="grid">
+          <label for="titolo">
+            Title
+            <input type="text" id="titolo" name="titolo" placeholder="e.g. Battle of Waterloo">
+          </label>
+
+          <label for="anno">
+            Year (Anno)
+            <input type="number" id="anno" name="anno" placeholder="e.g. 1815">
+          </label>
+        </div>
+
+        <div class="grid">
+          <label for="luogo">
+            Location (Luogo)
+            <input type="text" id="luogo" name="luogo" placeholder="e.g. Belgium">
+          </label>
+
+          <label for="civilta">
+            Civilization (Civiltà)
+            <input type="text" id="civilta" name="civilta" placeholder="e.g. French Empire">
+          </label>
+
+          <label for="categoria">
+            Category
+            <input type="text" id="categoria" name="categoria" placeholder="e.g. War">
+          </label>
+        </div>
+
+        <button type="submit">Search Database</button>
+      </form>
+    </article>
+
+    <!-- Create Event Collapsible Form -->
+    <details>
+      <summary role="button" class="secondary">➕ Add New Event</summary>
+      <article>
+        <form action="/quiz/events" method="POST">
+          <div class="grid">
+            <label for="new-titolo">
+              Title
+              <input type="text" id="new-titolo" name="titolo" required>
+            </label>
+
+            <label for="new-anno">
+              Year
+              <input type="number" id="new-anno" name="anno" required>
+            </label>
+          </div>
+
+          <div class="grid">
+            <label for="new-luogo">
+              Location
+              <input type="text" id="new-luogo" name="luogo">
+            </label>
+
+            <label for="new-civilta">
+              Civilization
+              <input type="text" id="new-civilta" name="civilta">
+            </label>
+
+            <label for="new-categoria">
+              Category
+              <input type="text" id="new-categoria" name="categoria">
+            </label>
+          </div>
+
+          <button type="submit">Save Event</button>
+        </form>
+      </article>
+    </details>
+
+  </main>
+
+</body>
+</html>
