@@ -86,16 +86,15 @@ public class EventoController {
 
         List<Evento> events = service.searchEvents(anno, titolo, luogo, civilta, categoria);
 
-        if (categoria != null && !categoria.isBlank()) {
-            events = service.getEventByCategory(categoria);
-        } else {
-            events = service.getAllEvents();
-        }
-
         model.addAttribute("events", events);
         model.addAttribute("eventCount", events.size());
 
         return "eventi";
+    }
+
+    @GetMapping ("/events/add")
+    public String addEvent(){
+        return "form";
     }
 
     @PostMapping("/events")

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Aggiungi Evento</title>
+</head>
+
+<body>
+    <!-- Create Event Form -->
+    <h3>Aggiungi un nuovo evento</h3>
+    <form th:action="@{/quiz/events}" method="post">
+        <div>
+            <label>Anno:</label>
+            <input type="number" name="anno" required>
+        </div>
+        <div>
+            <label>Titolo:</label>
+            <input type="text" name="titolo" required>
+        </div>
+        <div>
+            <label>Luogo:</label>
+            <input type="text" name="luogo" required>
+        </div>
+        <div>
+            <label>Civiltà:</label>
+            <input type="text" name="civilta" required>
+        </div>
+        <div>
+            <label>Categoria:</label>
+            <input type="text" name="categoria" required>
+        </div>
+        <div>
+            <label>Descrizione:</label><br>
+            <textarea name="descrizione"></textarea>
+        </div>
+        <button type="submit">Crea Evento</button>
+    </form>
+
+    <br>
+
+    <a th:href="@{/quiz}">Torna alla Home</a>
+</body>
+
+</html>

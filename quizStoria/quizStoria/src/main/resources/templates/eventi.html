@@ -1,89 +1,109 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All Historical Events</title>
-  <!-- Pico CSS CDN -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <title>Lista Eventi</title>
+  <style>
+    th {
+      cursor: pointer;
+    }
+  </style>
 </head>
+
 <body>
+  <h1>Lista degli Eventi</h1>
 
-  <!-- Navigation -->
-  <nav class="container">
-    <ul>
-      <li><strong>📜 Event Manager</strong></li>
-    </ul>
-    <ul>
-      <li><a href="/quiz" role="button" class="outline">← Home / Search</a></li>
-    </ul>
-  </nav>
+  <!-- Event Count -->
+  <p>Totale eventi trovati: <b th:text="${eventCount}">0</b></p>
 
-  <main class="container">
-    
-    <!-- Page Header & Counter -->
-    <div class="grid">
-      <div>
-        <h1>Historical Events</h1>
-        <p>Browsing events database.</p>
-      </div>
-      <div style="text-align: right;">
-        <p><mark>Total Events: <strong th:text="${eventCount}">0</strong></mark></p>
-      </div>
-    </div>
+  <li><a th:href="@{/quiz/events/oldest}">Evento più antico</a></li>
+  <li><a th:href="@{/quiz/events/newest}">Evento più recente</a></li>
 
-    <!-- Events List / Table View -->
-    <article th:if="${events != null and !events.empty}">
-      <div class="overflow-auto">
-        <table class="striped">
-          <thead>
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">Title</th>
-              <th scope="col">Year</th>
-              <th scope="col">Location</th>
-              <th scope="col">Civilization</th>
-              <th scope="col">Category</th>
-              <th scope="col" style="text-align: center;">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="event : ${events}">
-              <th scope="row" th:text="${event.id}">1</th>
-              <td><strong th:text="${event.titolo}">Battle of Waterloo</strong></td>
-              <td th:text="${event.anno}">1815</td>
-              <td th:text="${event.luogo}">Belgium</td>
-              <td th:text="${event.civilta}">French Empire</td>
-              <td><kbd th:text="${event.categoria}">War</kbd></td>
-              <td style="text-align: center;">
-                <div role="group">
-                  <!-- View Details Button -->
-                  <a th:href="@{/quiz/events/{id}(id=${event.id})}" role="button" class="outline">
-                    View
-                  </a>
+  <a th:href="@{/quiz/events/add}">Aggiungi evento</a>
 
-                  <!-- Delete Event Form -->
-                  <form th:action="@{/quiz/events/{id}/delete(id=${event.id})}" method="POST" style="margin: 0; display: inline;">
-                    <button type="submit" class="secondary outline" onclick="return confirm('Are you sure you want to delete this event?');">
-                      Delete
-                    </button>
-                  </form>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </article>
+  <!-- Search Form -->
+  <h3>Cerca Eventi</h3>
+  <form th:action="@{/quiz/events/search}" method="get">
+    <input type="number" name="anno" placeholder="Anno (es. -3500)">
+    <input type="text" name="titolo" placeholder="Titolo">
+    <input type="text" name="luogo" placeholder="Luogo">
+    <input type="text" name="civilta" placeholder="Civiltà">
+    <input type="text" name="categoria" placeholder="Categoria">
+    <button type="submit">Cerca</button>
+    <a th:href="@{/quiz/events}">Reset</a>
+  </form>
 
-    <!-- Empty State Message -->
-    <article th:if="${events == null or events.empty}">
-      <h2>No events found</h2>
-      <p>There are currently no events matching your criteria.</p>
-      <a href="/quiz" role="button">Go back to Home</a>
-    </article>
+  <hr>
 
-  </main>
+  <!-- Table of Events -->
+  <table border="1" cellpadding="8" id="eventsTable">
+    <thead>
+      <tr>
+        <th onclick="sortTable(0)">ID ↕</th>
+        <th onclick="sortTable(1)">Anno ↕</th>
+        <th onclick="sortTable(2)">Titolo ↕</th>
+        <th onclick="sortTable(3)">Luogo ↕</th>
+        <th onclick="sortTable(4)">Civiltà ↕</th>
+        <th onclick="sortTable(5)">Categoria ↕</th>
+        <th>Azioni</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="event : ${events}">
+        <td th:text="${event.id}">1</td>
+        <td th:text="${event.anno}">-3500</td>
+        <td th:text="${event.titolo}">Nascita della scrittura</td>
+        <td th:text="${event.luogo}">Mesopotamia</td>
+        <td th:text="${event.civilta}">Sumeri</td>
+        <td th:text="${event.categoria}">cultura</td>
+        <td>
+          <a th:href="@{/quiz/events/{id}(id=${event.id})}">Dettagli</a>
 
+          <!-- Delete Form -->
+          <form th:action="@{/quiz/events/{id}/delete(id=${event.id})}" method="post" style="display:inline;">
+            <button type="submit" onclick="return confirm('Sei sicuro?')">Elimina</button>
+          </form>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <a th:href="@{/quiz}">Torna alla Home</a>
+
+  <!-- JavaScript for Header Sorting -->
+  <script>
+    let currentColumn = -1;
+    let asc = true;
+
+    function sortTable(n) {
+      const tbody = document.querySelector("#eventsTable tbody");
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+
+      // Toggle direction if clicking the SAME column, or default to DESCENDING (false) for a NEW column
+      if (currentColumn === n) {
+        asc = !asc;
+      } else {
+        currentColumn = n;
+        asc = true; // First click on a new column starts DESCENDING (highest to lowest)
+      }
+
+      rows.sort((a, b) => {
+        let valA = a.children[n].innerText.trim();
+        let valB = b.children[n].innerText.trim();
+
+        let diff = (!isNaN(valA) && !isNaN(valB))
+          ? valA - valB
+          : valA.localeCompare(valB);
+
+        // When asc is false, -diff turns ascending into descending (highest to lowest)
+        return asc ? diff : -diff;
+      });
+
+      rows.forEach(row => tbody.appendChild(row));
+    }
+  </script>
 </body>
+
 </html>

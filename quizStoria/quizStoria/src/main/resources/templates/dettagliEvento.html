@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dettagli Evento</title>
+</head>
+<body>
+    <h1>Dettagli Evento</h1>
+
+    <!-- Event Details View -->
+    <div th:if="${event != null}">
+        <p><strong>ID:</strong> <span th:text="${event.id}">1</span></p>
+        <p><strong>Anno:</strong> <span th:text="${event.anno}">-3500</span></p>
+        <p><strong>Titolo:</strong> <span th:text="${event.titolo}">Nascita della scrittura</span></p>
+        <p><strong>Luogo:</strong> <span th:text="${event.luogo}">Mesopotamia</span></p>
+        <p><strong>Civiltà:</strong> <span th:text="${event.civilta}">Sumeri</span></p>
+        <p><strong>Categoria:</strong> <span th:text="${event.categoria}">cultura</span></p>
+        <p><strong>Descrizione:</strong> <span th:text="${event.descrizione}">Comparsa della scrittura cuneiforme.</span></p>
+    </div>
+
+    <div th:if="${event == null}">
+        <p>Nessun evento trovato.</p>
+    </div>
+
+    <hr>
+
+    <!-- Form to Update the Event -->
+    <h3 th:if="${event != null}">Modifica Evento</h3>
+    <form th:if="${event != null}" th:action="@{/quiz/events/{id}(id=${event.id})}" method="post">
+        <div>
+            <label>Anno:</label>
+            <input type="number" name="anno" th:value="${event.anno}">
+        </div>
+        <div>
+            <label>Titolo:</label>
+            <input type="text" name="titolo" th:value="${event.titolo}">
+        </div>
+        <div>
+            <label>Luogo:</label>
+            <input type="text" name="luogo" th:value="${event.luogo}">
+        </div>
+        <div>
+            <label>Civiltà:</label>
+            <input type="text" name="civilta" th:value="${event.civilta}">
+        </div>
+        <div>
+            <label>Categoria:</label>
+            <input type="text" name="categoria" th:value="${event.categoria}">
+        </div>
+        <div>
+            <label>Descrizione:</label><br>
+            <textarea name="descrizione" th:text="${event.descrizione}"></textarea>
+        </div>
+        <button type="submit">Aggiorna Evento</button>
+    </form>
+
+    <br>
+    <a th:href="@{/quiz/events}">Torna alla lista eventi</a>
+</body>
+</html>

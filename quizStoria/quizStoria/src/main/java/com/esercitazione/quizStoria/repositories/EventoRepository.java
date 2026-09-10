@@ -20,23 +20,25 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
 
     List<Evento> findByCivilta(String civilta);
 
+    List<Evento> findAllByOrderByIdAsc();
+
     Optional<Evento> findFirstByOrderByAnnoDesc();
 
     Optional<Evento> findFirstByOrderByAnnoAsc();
 
-    //long countByCategoria(String categoria);
+    // long countByCategoria(String categoria);
 
     @Query("SELECT e FROM Evento e WHERE " +
-           "(:anno IS NULL OR e.anno = :anno) AND " +
-           "(:titolo IS NULL OR LOWER(e.titolo) LIKE LOWER(CONCAT('%', :titolo, '%'))) AND " +
-           "(:luogo IS NULL OR LOWER(e.luogo) LIKE LOWER(CONCAT('%', :luogo, '%'))) AND " +
-           "(:civilta IS NULL OR LOWER(e.civilta) LIKE LOWER(CONCAT('%', :civilta, '%'))) AND " +
-           "(:categoria IS NULL OR LOWER(e.categoria) = LOWER(:categoria))")
+            "(:anno IS NULL OR e.anno = :anno) AND " +
+            "(:titolo IS NULL OR :titolo = '' OR LOWER(e.titolo) LIKE LOWER(CONCAT('%', :titolo, '%'))) AND " +
+            "(:luogo IS NULL OR :luogo = '' OR LOWER(e.luogo) LIKE LOWER(CONCAT('%', :luogo, '%'))) AND " +
+            "(:civilta IS NULL OR :civilta = '' OR LOWER(e.civilta) LIKE LOWER(CONCAT('%', :civilta, '%'))) AND " +
+            "(:categoria IS NULL OR :categoria = '' OR LOWER(e.categoria) = LOWER(:categoria))" +
+            "ORDER BY e.id ASC")
     List<Evento> searchEvents(
-        @Param("anno") Integer anno,
-        @Param("titolo") String titolo,
-        @Param("luogo") String luogo,
-        @Param("civilta") String civilta,
-        @Param("categoria") String categoria
-    );
+            @Param("anno") Integer anno,
+            @Param("titolo") String titolo,
+            @Param("luogo") String luogo,
+            @Param("civilta") String civilta,
+            @Param("categoria") String categoria);
 }
