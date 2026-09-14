@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import com.esercitazione.quizStoria.entities.Domanda;
 import com.esercitazione.quizStoria.entities.Evento;
 import com.esercitazione.quizStoria.repositories.EventoRepository;
 
@@ -13,9 +14,11 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class EventoService {
     private final EventoRepository repository;
+    private final DomandaService domandaService;
 
-    public EventoService(EventoRepository repository) {
+    public EventoService(EventoRepository repository, DomandaService domandaService) {
         this.repository = repository;
+        this.domandaService = domandaService;
     }
 
     public List<Evento> getAllEvents() {
@@ -27,7 +30,7 @@ public class EventoService {
                 .orElseThrow(() -> new IllegalArgumentException("Evento con id: '" + id + "' non trovato"));
     }
 
-    public List<Evento> getEventByYear(int anno) {
+    public List<Evento> getEventByYear(Integer anno) {
         return repository.findByAnno(anno);
     }
 
@@ -84,7 +87,27 @@ public class EventoService {
         if (evento.getCategoria() == null || evento.getCategoria().trim().isEmpty()) {
             throw new IllegalArgumentException("L'evento deve avere una categoria");
         }
-        return repository.save(evento);
+
+        Evento savedEvent = repository.save(evento);
+
+        domandaService.generateQuestionsForEvent(savedEvent);
+
+        return savedEvent;
+    }
+
+    @Transactional
+    public int refreshAllQuestions() {
+        List<Evento> allEvents = repository.findAll();
+        int generated = 0;
+
+        for (Evento evento : allEvents) {
+            List<Domanda> esistenti = domandaService.getDomandeByEventoId(evento.getId());
+            if (esistenti.isEmpty()) {
+                domandaService.generateQuestionsForEvent(evento);
+                generated++;
+            }
+        }
+        return generated;
     }
 
     @Transactional

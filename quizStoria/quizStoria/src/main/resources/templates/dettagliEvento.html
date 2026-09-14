@@ -1,59 +1,86 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Dettagli Evento</title>
+    <meta charset="UTF-8">
+    <title th:text="${event.titolo} + ' — Quiz di Storia'">Evento — Quiz di Storia</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+        :root {
+            --ink: #101826; --ink-2: #182338; --gold: #c9a461; --gold-dim: #8f7947;
+            --parchment: #e8e4d9; --parchment-dim: #a9a599; --line: #2b3650;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--ink); color: var(--parchment); font-family: 'Inter', sans-serif; }
+        .wrap { max-width: 680px; margin: 0 auto; padding: 0 24px; }
+
+        nav { border-bottom: 1px solid var(--line); padding: 20px 0; }
+        nav .wrap { display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-family: 'Spectral', serif; font-size: 20px; color: var(--gold); text-decoration: none; }
+        .navlinks a { color: var(--parchment-dim); text-decoration: none; margin-left: 28px; font-size: 14px; }
+        .navlinks a:hover { color: var(--gold); }
+
+        .back { display: inline-block; margin: 40px 0 0; color: var(--parchment-dim); text-decoration: none; font-size: 13px; }
+        .back:hover { color: var(--gold); }
+
+        .year-mark { font-family: 'Spectral', serif; color: var(--gold); font-size: 20px; margin: 26px 0 8px; }
+        h1 { font-family: 'Spectral', serif; font-size: 40px; font-weight: 600; line-height: 1.15; margin: 0 0 24px; }
+
+        .tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px; }
+        .tag { border: 1px solid var(--line); color: var(--parchment-dim); font-size: 12px; padding: 6px 12px; }
+
+        .desc { font-size: 16px; line-height: 1.75; color: var(--parchment); border-top: 1px solid var(--line); padding-top: 28px; max-width: 62ch; }
+        .desc.empty { color: var(--parchment-dim); font-style: normal; }
+
+        .actions { display: flex; gap: 24px; margin: 48px 0 60px; }
+        .actions a, .actions button {
+            background: none; border: none; cursor: pointer;
+            color: var(--parchment-dim); font-size: 13px; font-family: 'Inter', sans-serif; padding: 0;
+            text-decoration: none;
+        }
+        .actions a:hover { color: var(--gold); }
+        .actions .danger:hover { color: #d17d6a; }
+
+        .qlink { display: inline-block; margin-top: 6px; color: var(--gold); text-decoration: none; font-size: 14px; }
+        .qlink:hover { text-decoration: underline; }
+    </style>
 </head>
 <body>
-    <h1>Dettagli Evento</h1>
+    <nav>
+        <div class="wrap">
+            <a class="brand" href="/quiz">Quiz di Storia</a>
+            <div class="navlinks">
+                <a th:href="@{/quiz/events}">Eventi</a>
+                <a th:href="@{/quiz/questions}">Domande</a>
+                <a th:href="@{/quiz/questions/play}">Gioca</a>
+            </div>
+        </div>
+    </nav>
 
-    <!-- Event Details View -->
-    <div th:if="${event != null}">
-        <p><strong>ID:</strong> <span th:text="${event.id}">1</span></p>
-        <p><strong>Anno:</strong> <span th:text="${event.anno}">-3500</span></p>
-        <p><strong>Titolo:</strong> <span th:text="${event.titolo}">Nascita della scrittura</span></p>
-        <p><strong>Luogo:</strong> <span th:text="${event.luogo}">Mesopotamia</span></p>
-        <p><strong>Civiltà:</strong> <span th:text="${event.civilta}">Sumeri</span></p>
-        <p><strong>Categoria:</strong> <span th:text="${event.categoria}">cultura</span></p>
-        <p><strong>Descrizione:</strong> <span th:text="${event.descrizione}">Comparsa della scrittura cuneiforme.</span></p>
+    <div class="wrap">
+        <a class="back" th:href="@{/quiz/events}">&larr; Torna agli eventi</a>
+
+        <div class="year-mark" th:text="${event.anno}">Anno</div>
+        <h1 th:text="${event.titolo}">Titolo evento</h1>
+
+        <div class="tags">
+            <span class="tag" th:text="${event.luogo}">Luogo</span>
+            <span class="tag" th:text="${event.civilta}">Civiltà</span>
+            <span class="tag" th:text="${event.categoria}">Categoria</span>
+        </div>
+
+        <p class="desc" th:if="${event.descrizione}" th:text="${event.descrizione}">Descrizione dell'evento.</p>
+        <p class="desc empty" th:unless="${event.descrizione}">Nessuna descrizione disponibile per questo evento.</p>
+
+        <div>
+            <a class="qlink" th:href="@{/quiz/questions/event/{id}(id=${event.id})}">Vedi le domande generate per questo evento &rarr;</a>
+        </div>
+
+        <div class="actions">
+            <a th:href="@{/quiz/events/edit/{id}(id=${event.id})}">Modifica</a>
+            <form th:action="@{/quiz/events/{id}/delete(id=${event.id})}" method="post" style="display:inline">
+                <button type="submit" class="danger">Elimina evento</button>
+            </form>
+        </div>
     </div>
-
-    <div th:if="${event == null}">
-        <p>Nessun evento trovato.</p>
-    </div>
-
-    <hr>
-
-    <!-- Form to Update the Event -->
-    <h3 th:if="${event != null}">Modifica Evento</h3>
-    <form th:if="${event != null}" th:action="@{/quiz/events/{id}(id=${event.id})}" method="post">
-        <div>
-            <label>Anno:</label>
-            <input type="number" name="anno" th:value="${event.anno}">
-        </div>
-        <div>
-            <label>Titolo:</label>
-            <input type="text" name="titolo" th:value="${event.titolo}">
-        </div>
-        <div>
-            <label>Luogo:</label>
-            <input type="text" name="luogo" th:value="${event.luogo}">
-        </div>
-        <div>
-            <label>Civiltà:</label>
-            <input type="text" name="civilta" th:value="${event.civilta}">
-        </div>
-        <div>
-            <label>Categoria:</label>
-            <input type="text" name="categoria" th:value="${event.categoria}">
-        </div>
-        <div>
-            <label>Descrizione:</label><br>
-            <textarea name="descrizione" th:text="${event.descrizione}"></textarea>
-        </div>
-        <button type="submit">Aggiorna Evento</button>
-    </form>
-
-    <br>
-    <a th:href="@{/quiz/events}">Torna alla lista eventi</a>
 </body>
 </html>

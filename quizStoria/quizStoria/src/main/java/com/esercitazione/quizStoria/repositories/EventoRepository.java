@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface EventoRepository extends JpaRepository<Evento, Long> {
 
-    List<Evento> findByAnno(int anno);
+    List<Evento> findByAnno(Integer anno);
 
     List<Evento> findByTitolo(String titolo);
 

@@ -1,10 +1,15 @@
 package com.esercitazione.quizStoria.entities;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class Evento {
@@ -29,6 +34,9 @@ public class Evento {
 
     @Column(columnDefinition = "TEXT")
     private String descrizione;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Domanda> domande = new ArrayList<>();
 
     // Getters e setters
 
@@ -64,7 +72,7 @@ public class Evento {
         this.id = id;
     }
 
-    public void setAnno(int anno) {
+    public void setAnno(Integer anno) {
         this.anno = anno;
     }
 
@@ -86,5 +94,13 @@ public class Evento {
 
     public void setDescrizione(String descrizione) {
         this.descrizione = descrizione;
+    }
+
+    public List<Domanda> getDomande() {
+        return domande;
+    }
+
+    public void setDomande(List<Domanda> domande) {
+        this.domande = domande;
     }
 }

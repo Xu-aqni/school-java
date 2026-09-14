@@ -92,8 +92,16 @@ public class EventoController {
         return "eventi";
     }
 
-    @GetMapping ("/events/add")
-    public String addEvent(){
+    @GetMapping("/events/add")
+    public String addEvent(Model model) {
+        model.addAttribute("event", new Evento());
+        return "form";
+    }
+
+    @GetMapping("/events/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Evento event = service.getEventById(id);
+        model.addAttribute("event", event);
         return "form";
     }
 
@@ -114,5 +122,11 @@ public class EventoController {
     public String deleteEvent(@PathVariable Long id) {
         service.deleteEvent(id);
         return "redirect:/quiz/events";
+    }
+
+    @PostMapping("/events/refresh-questions")
+    public String refreshQuestions() {
+        service.refreshAllQuestions();
+        return "redirect:/quiz/questions";
     }
 }

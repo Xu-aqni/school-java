@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Domande — Quiz di Storia</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            --ink: #101826;
+            --ink-2: #182338;
+            --gold: #c9a461;
+            --gold-dim: #8f7947;
+            --parchment: #e8e4d9;
+            --parchment-dim: #a9a599;
+            --line: #2b3650;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--ink);
+            color: var(--parchment);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .wrap {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        nav {
+            border-bottom: 1px solid var(--line);
+            padding: 20px 0;
+        }
+
+        nav .wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand {
+            font-family: 'Spectral', serif;
+            font-size: 20px;
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .navlinks a {
+            color: var(--parchment-dim);
+            text-decoration: none;
+            margin-left: 28px;
+            font-size: 14px;
+        }
+
+        .navlinks a:hover {
+            color: var(--gold);
+        }
+
+        header.page {
+            padding: 56px 0 8px;
+        }
+
+        header.page h1 {
+            font-family: 'Spectral', serif;
+            font-size: 36px;
+            margin: 0 0 6px;
+        }
+
+        header.page .count {
+            color: var(--parchment-dim);
+            font-size: 14px;
+        }
+
+        /* Stili per la barra d'azione e il pulsante di generazione */
+        .actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .btn-refresh {
+            background: none;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 9px 18px;
+            font-size: 13px;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-refresh:hover {
+            background: var(--gold);
+            color: var(--ink);
+        }
+
+        form.search {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 32px 0 40px;
+            padding: 18px;
+            background: var(--ink-2);
+            border: 1px solid var(--line);
+        }
+
+        form.search input,
+        form.search select {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--line);
+            color: var(--parchment);
+            font-size: 13px;
+            padding: 6px 2px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        form.search select option {
+            background: var(--ink-2);
+            color: var(--parchment);
+        }
+
+        form.search input::placeholder {
+            color: var(--parchment-dim);
+        }
+
+        form.search input:focus,
+        form.search select:focus {
+            outline: none;
+            border-bottom-color: var(--gold);
+        }
+
+        form.search button {
+            grid-column: span 3;
+            justify-self: start;
+            background: none;
+            border: 1px solid var(--line);
+            color: var(--parchment);
+            padding: 8px 18px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+
+        form.search button:hover {
+            border-color: var(--gold-dim);
+        }
+
+        .qrow {
+            border-top: 1px solid var(--line);
+            padding: 18px 0;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .qrow:last-child {
+            border-bottom: 1px solid var(--line);
+        }
+
+        .qrow .type {
+            flex: none;
+            width: 110px;
+            color: var(--gold-dim);
+            font-size: 11px;
+            padding-top: 2px;
+        }
+
+        .qrow .body {
+            flex: 1;
+        }
+
+        .qrow .contents {
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 6px;
+        }
+
+        .qrow .event-link {
+            color: var(--parchment-dim);
+            font-size: 12px;
+            text-decoration: none;
+        }
+
+        .qrow .event-link:hover {
+            color: var(--gold);
+        }
+
+        .empty {
+            color: var(--parchment-dim);
+            padding: 40px 0 70px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="wrap">
+            <a class="brand" href="/quiz">Quiz di Storia</a>
+            <div class="navlinks">
+                <a th:href="@{/quiz/events}">Eventi</a>
+                <a th:href="@{/quiz/questions}">Domande</a>
+                <a th:href="@{/quiz/questions/play}">Gioca</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="wrap">
+        <header class="page">
+            <h1>Domande</h1>
+            <div class="actions-bar">
+                <div class="count" th:text="${questionCount} + ' domande in archivio'">0 domande in archivio</div>
+
+                <!-- Pulsante per rigenerare le domande -->
+                <form th:action="@{/quiz/events/refresh-questions}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn-refresh">&#8635; Rigenera tutte le domande</button>
+                </form>
+            </div>
+        </header>
+
+        <form class="search" th:action="@{/quiz/questions/search}" method="get">
+            <select name="type">
+                <option value="">Tutti i tipi</option>
+                <option th:each="t : ${types}" th:value="${t}" th:text="${t}"
+                    th:selected="${param.type != null and param.type[0] == t}"></option>
+            </select>
+            <input type="text" name="contents" placeholder="Testo della domanda" th:value="${param.contents}" />
+            <input type="text" name="eventoTitolo" placeholder="Titolo evento" th:value="${param.eventoTitolo}" />
+            <button type="submit">Cerca</button>
+        </form>
+
+        <div th:if="${!questions.isEmpty()}">
+            <div class="qrow" th:each="q : ${questions}">
+                <div class="type" th:text="${q.type}">TIPO</div>
+                <div class="body">
+                    <div class="contents" th:text="${q.contents}">Testo della domanda</div>
+                    <a class="event-link" th:if="${q.event != null}" th:href="@{/quiz/events/{id}(id=${q.event.id})}"
+                        th:text="'Evento: ' + ${q.event.titolo}">Evento collegato</a>
+                </div>
+            </div>
+        </div>
+
+        <p class="empty" th:if="${questions.isEmpty()}">Nessuna domanda trovata.</p>
+    </div>
+</body>
+
+</html>

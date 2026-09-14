@@ -1,109 +1,124 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Lista Eventi</title>
-  <style>
-    th {
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Eventi — Quiz di Storia</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+        :root {
+            --ink: #101826; --ink-2: #182338; --gold: #c9a461; --gold-dim: #8f7947;
+            --parchment: #e8e4d9; --parchment-dim: #a9a599; --line: #2b3650;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--ink); color: var(--parchment); font-family: 'Inter', sans-serif; }
+        .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; }
+
+        nav { border-bottom: 1px solid var(--line); padding: 20px 0; }
+        nav .wrap { display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-family: 'Spectral', serif; font-size: 20px; color: var(--gold); text-decoration: none; }
+        .navlinks a { color: var(--parchment-dim); text-decoration: none; margin-left: 28px; font-size: 14px; }
+        .navlinks a:hover { color: var(--gold); }
+
+        header.page { padding: 56px 0 8px; }
+        header.page h1 { font-family: 'Spectral', serif; font-size: 36px; margin: 0 0 6px; }
+        header.page .count { color: var(--parchment-dim); font-size: 14px; }
+
+        form.search {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin: 32px 0 12px;
+            padding: 0;
+            background: none;
+            border: none;
+        }
+        form.search input {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--line);
+            color: var(--parchment);
+            font-size: 13px;
+            padding: 8px 2px;
+            font-family: 'Inter', sans-serif;
+        }
+        form.search input::placeholder { color: var(--parchment-dim); }
+        form.search input:focus { outline: none; border-bottom-color: var(--gold); }
+        form.search button {
+            grid-column: span 5;
+            justify-self: start;
+            background: none;
+            border: 1px solid var(--line);
+            color: var(--parchment);
+            padding: 8px 18px;
+            font-size: 13px;
+            cursor: pointer;
+            margin-top: 4px;
+        }
+        form.search button:hover { border-color: var(--gold-dim); color: var(--gold); }
+
+        .add-link { display: inline-block; margin: 20px 0 40px; color: var(--gold); text-decoration: none; font-size: 14px; }
+        .add-link:hover { text-decoration: underline; }
+
+        .timeline { position: relative; padding-left: 26px; margin-bottom: 60px; }
+        .timeline::before {
+            content: ""; position: absolute; left: 4px; top: 6px; bottom: 6px; width: 1px; background: var(--line);
+        }
+        .entry { position: relative; padding: 0 0 28px; }
+        .entry::before {
+            content: ""; position: absolute; left: -26px; top: 6px; width: 9px; height: 9px; border-radius: 50%;
+            background: var(--gold);
+        }
+        .entry .year { font-family: 'Spectral', serif; color: var(--gold); font-size: 15px; margin-bottom: 4px; }
+        .entry a.title { color: var(--parchment); text-decoration: none; font-size: 19px; font-weight: 500; display: block; margin-bottom: 4px; }
+        .entry a.title:hover { color: var(--gold); }
+        .entry .meta { color: var(--parchment-dim); font-size: 13px; }
+        .entry .meta span:not(:last-child)::after { content: "·"; margin: 0 8px; color: var(--line); }
+
+        .empty { color: var(--parchment-dim); padding: 40px 0; font-size: 14px; }
+    </style>
 </head>
-
 <body>
-  <h1>Lista degli Eventi</h1>
+    <nav>
+        <div class="wrap">
+            <a class="brand" href="/quiz">Quiz di Storia</a>
+            <div class="navlinks">
+                <a th:href="@{/quiz/events}">Eventi</a>
+                <a th:href="@{/quiz/questions/play}">Gioca</a>
+            </div>
+        </div>
+    </nav>
 
-  <!-- Event Count -->
-  <p>Totale eventi trovati: <b th:text="${eventCount}">0</b></p>
+    <div class="wrap">
+        <header class="page">
+            <h1>Eventi</h1>
+            <div class="count" th:text="${eventCount} + ' eventi in archivio'">0 eventi in archivio</div>
+        </header>
 
-  <li><a th:href="@{/quiz/events/oldest}">Evento più antico</a></li>
-  <li><a th:href="@{/quiz/events/newest}">Evento più recente</a></li>
+        <form class="search" th:action="@{/quiz/events/search}" method="get">
+            <input type="number" name="anno" placeholder="Anno" />
+            <input type="text" name="titolo" placeholder="Titolo" />
+            <input type="text" name="luogo" placeholder="Luogo" />
+            <input type="text" name="civilta" placeholder="Civiltà" />
+            <input type="text" name="categoria" placeholder="Categoria" />
+            <button type="submit">Cerca</button>
+        </form>
 
-  <a th:href="@{/quiz/events/add}">Aggiungi evento</a>
+        <a class="add-link" th:href="@{/quiz/events/add}">+ Aggiungi un nuovo evento</a>
 
-  <!-- Search Form -->
-  <h3>Cerca Eventi</h3>
-  <form th:action="@{/quiz/events/search}" method="get">
-    <input type="number" name="anno" placeholder="Anno (es. -3500)">
-    <input type="text" name="titolo" placeholder="Titolo">
-    <input type="text" name="luogo" placeholder="Luogo">
-    <input type="text" name="civilta" placeholder="Civiltà">
-    <input type="text" name="categoria" placeholder="Categoria">
-    <button type="submit">Cerca</button>
-    <a th:href="@{/quiz/events}">Reset</a>
-  </form>
+        <div class="timeline" th:if="${!events.isEmpty()}">
+            <div class="entry" th:each="event : ${events}">
+                <div class="year" th:text="${event.anno}">Anno</div>
+                <a class="title" th:href="@{/quiz/events/{id}(id=${event.id})}" th:text="${event.titolo}">Titolo</a>
+                <div class="meta">
+                    <span th:text="${event.luogo}">Luogo</span>
+                    <span th:text="${event.civilta}">Civiltà</span>
+                    <span th:text="${event.categoria}">Categoria</span>
+                </div>
+            </div>
+        </div>
 
-  <hr>
-
-  <!-- Table of Events -->
-  <table border="1" cellpadding="8" id="eventsTable">
-    <thead>
-      <tr>
-        <th onclick="sortTable(0)">ID ↕</th>
-        <th onclick="sortTable(1)">Anno ↕</th>
-        <th onclick="sortTable(2)">Titolo ↕</th>
-        <th onclick="sortTable(3)">Luogo ↕</th>
-        <th onclick="sortTable(4)">Civiltà ↕</th>
-        <th onclick="sortTable(5)">Categoria ↕</th>
-        <th>Azioni</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr th:each="event : ${events}">
-        <td th:text="${event.id}">1</td>
-        <td th:text="${event.anno}">-3500</td>
-        <td th:text="${event.titolo}">Nascita della scrittura</td>
-        <td th:text="${event.luogo}">Mesopotamia</td>
-        <td th:text="${event.civilta}">Sumeri</td>
-        <td th:text="${event.categoria}">cultura</td>
-        <td>
-          <a th:href="@{/quiz/events/{id}(id=${event.id})}">Dettagli</a>
-
-          <!-- Delete Form -->
-          <form th:action="@{/quiz/events/{id}/delete(id=${event.id})}" method="post" style="display:inline;">
-            <button type="submit" onclick="return confirm('Sei sicuro?')">Elimina</button>
-          </form>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-
-  <hr>
-
-  <a th:href="@{/quiz}">Torna alla Home</a>
-
-  <!-- JavaScript for Header Sorting -->
-  <script>
-    let currentColumn = -1;
-    let asc = true;
-
-    function sortTable(n) {
-      const tbody = document.querySelector("#eventsTable tbody");
-      const rows = Array.from(tbody.querySelectorAll("tr"));
-
-      // Toggle direction if clicking the SAME column, or default to DESCENDING (false) for a NEW column
-      if (currentColumn === n) {
-        asc = !asc;
-      } else {
-        currentColumn = n;
-        asc = true; // First click on a new column starts DESCENDING (highest to lowest)
-      }
-
-      rows.sort((a, b) => {
-        let valA = a.children[n].innerText.trim();
-        let valB = b.children[n].innerText.trim();
-
-        let diff = (!isNaN(valA) && !isNaN(valB))
-          ? valA - valB
-          : valA.localeCompare(valB);
-
-        // When asc is false, -diff turns ascending into descending (highest to lowest)
-        return asc ? diff : -diff;
-      });
-
-      rows.forEach(row => tbody.appendChild(row));
-    }
-  </script>
+        <p class="empty" th:if="${events.isEmpty()}">Nessun evento trovato.</p>
+    </div>
 </body>
-
 </html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Domande dell'evento — Quiz di Storia</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+        :root {
+            --ink: #101826; --ink-2: #182338; --gold: #c9a461; --gold-dim: #8f7947;
+            --parchment: #e8e4d9; --parchment-dim: #a9a599; --line: #2b3650;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--ink); color: var(--parchment); font-family: 'Inter', sans-serif; }
+        .wrap { max-width: 640px; margin: 0 auto; padding: 0 24px; }
+
+        nav { border-bottom: 1px solid var(--line); padding: 20px 0; }
+        nav .wrap { display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-family: 'Spectral', serif; font-size: 20px; color: var(--gold); text-decoration: none; }
+        .navlinks a { color: var(--parchment-dim); text-decoration: none; margin-left: 28px; font-size: 14px; }
+        .navlinks a:hover { color: var(--gold); }
+
+        .back { display: inline-block; margin: 40px 0 0; color: var(--parchment-dim); text-decoration: none; font-size: 13px; }
+        .back:hover { color: var(--gold); }
+
+        h1 { font-family: 'Spectral', serif; font-size: 32px; margin: 22px 0 34px; }
+
+        .qrow { border-top: 1px solid var(--line); padding: 20px 0; display: flex; justify-content: space-between; gap: 20px; }
+        .qrow:last-child { border-bottom: 1px solid var(--line); }
+        .qrow .type { color: var(--gold-dim); font-size: 11px; text-transform: none; flex: none; width: 110px; padding-top: 2px; }
+        .qrow .contents { font-size: 15px; line-height: 1.5; flex: 1; }
+
+        .empty { color: var(--parchment-dim); padding: 40px 0 70px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="wrap">
+            <a class="brand" href="/quiz">Quiz di Storia</a>
+            <div class="navlinks">
+                <a th:href="@{/quiz/events}">Eventi</a>
+                <a th:href="@{/quiz/questions}">Domande</a>
+                <a th:href="@{/quiz/questions/play}">Gioca</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="wrap">
+        <a class="back" th:href="@{/quiz/events}">&larr; Torna agli eventi</a>
+        <h1>Domande generate per questo evento</h1>
+
+        <div th:if="${!questions.isEmpty()}">
+            <div class="qrow" th:each="q : ${questions}">
+                <div class="type" th:text="${q.type}">TIPO</div>
+                <div class="contents" th:text="${q.contents}">Testo della domanda</div>
+            </div>
+        </div>
+
+        <p class="empty" th:if="${questions.isEmpty()}">Nessuna domanda generata per questo evento.</p>
+    </div>
+</body>
+</html>

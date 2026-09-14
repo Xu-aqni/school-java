@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Risultato del quiz — Quiz di Storia</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Spectral:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+        :root {
+            --ink: #101826; --ink-2: #182338; --gold: #c9a461; --gold-dim: #8f7947;
+            --parchment: #e8e4d9; --parchment-dim: #a9a599; --line: #2b3650;
+            --good: #7fae8f; --bad: #cf7d6c;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--ink); color: var(--parchment); font-family: 'Inter', sans-serif; }
+        .wrap { max-width: 620px; margin: 0 auto; padding: 0 24px; }
+
+        nav { border-bottom: 1px solid var(--line); padding: 20px 0; }
+        nav .wrap { display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-family: 'Spectral', serif; font-size: 20px; color: var(--gold); text-decoration: none; }
+        .navlinks a { color: var(--parchment-dim); text-decoration: none; margin-left: 28px; font-size: 14px; }
+        .navlinks a:hover { color: var(--gold); }
+
+        .summary { padding: 60px 0 30px; text-align: center; }
+        .summary .pct {
+            font-family: 'Spectral', serif;
+            font-size: 64px;
+            color: var(--gold);
+            margin: 0;
+            line-height: 1;
+        }
+        .summary .pct-label { color: var(--parchment-dim); font-size: 14px; margin: 8px 0 30px; }
+
+        .stats { display: flex; justify-content: center; gap: 40px; margin-bottom: 44px; }
+        .stat { text-align: center; }
+        .stat .value { font-family: 'Spectral', serif; font-size: 26px; }
+        .stat.correct .value { color: var(--good); }
+        .stat.wrong .value { color: var(--bad); }
+        .stat .label { color: var(--parchment-dim); font-size: 12px; margin-top: 4px; }
+
+        h2.breakdown-title {
+            font-family: 'Spectral', serif;
+            font-size: 20px;
+            font-weight: 500;
+            border-top: 1px solid var(--line);
+            padding-top: 30px;
+            margin: 0 0 20px;
+        }
+
+        .qrow { border-bottom: 1px solid var(--line); padding: 16px 0; }
+        .qrow .contents { font-size: 14px; margin-bottom: 8px; color: var(--parchment); }
+        .qrow .answers { display: flex; gap: 20px; font-size: 13px; flex-wrap: wrap; }
+        .qrow .answers span.label { color: var(--parchment-dim); }
+        .qrow .answers .user-answer.correct { color: var(--good); }
+        .qrow .answers .user-answer.wrong { color: var(--bad); }
+        .qrow .answers .correct-answer { color: var(--good); }
+        .qrow .badge {
+            display: inline-block;
+            font-size: 11px;
+            padding: 2px 8px;
+            border: 1px solid var(--line);
+            margin-bottom: 8px;
+        }
+        .qrow .badge.correct { border-color: var(--good); color: var(--good); }
+        .qrow .badge.wrong { border-color: var(--bad); color: var(--bad); }
+
+        .actions { display: flex; gap: 14px; justify-content: center; margin: 44px 0 70px; }
+        .btn { padding: 12px 24px; font-size: 14px; text-decoration: none; border-radius: 2px; font-weight: 500; }
+        .btn-primary { background: var(--gold); color: var(--ink); }
+        .btn-primary:hover { opacity: 0.88; }
+        .btn-ghost { border: 1px solid var(--line); color: var(--parchment); }
+        .btn-ghost:hover { border-color: var(--gold-dim); }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="wrap">
+            <a class="brand" href="/quiz">Quiz di Storia</a>
+            <div class="navlinks">
+                <a th:href="@{/quiz/events}">Eventi</a>
+                <a th:href="@{/quiz/questions}">Domande</a>
+                <a th:href="@{/quiz/questions/play}">Gioca</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="wrap">
+        <div class="summary">
+            <p class="pct" th:text="${#numbers.formatDecimal(percentuale, 1, 0)} + '%'">0%</p>
+            <p class="pct-label">di risposte corrette</p>
+
+            <div class="stats">
+                <div class="stat correct">
+                    <div class="value" th:text="${corrette}">0</div>
+                    <div class="label">Corrette</div>
+                </div>
+                <div class="stat wrong">
+                    <div class="value" th:text="${errate}">0</div>
+                    <div class="label">Errate</div>
+                </div>
+                <div class="stat">
+                    <div class="value" th:text="${totale}">0</div>
+                    <div class="label">Totale</div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="breakdown-title">Dettaglio domande</h2>
+
+        <div class="qrow" th:each="r : ${risultati}">
+            <span class="badge" th:classappend="${r.correct} ? 'correct' : 'wrong'"
+                  th:text="${r.correct} ? 'Corretta' : 'Errata'">Esito</span>
+            <div class="contents" th:text="${r.contents}">Testo della domanda</div>
+            <div class="answers">
+                <span>
+                    <span class="label">La tua risposta:</span>
+                    <span class="user-answer" th:classappend="${r.correct} ? 'correct' : 'wrong'" th:text="${r.userAnswer}">risposta</span>
+                </span>
+                <span th:if="${!r.correct}">
+                    <span class="label">Risposta corretta:</span>
+                    <span class="correct-answer" th:text="${r.correctAnswer}">risposta corretta</span>
+                </span>
+            </div>
+        </div>
+
+        <div class="actions">
+            <a class="btn btn-primary" th:href="@{/quiz/questions/play}">Gioca ancora</a>
+            <a class="btn btn-ghost" th:href="@{/quiz/events}">Vedi eventi</a>
+        </div>
+    </div>
+</body>
+</html>
