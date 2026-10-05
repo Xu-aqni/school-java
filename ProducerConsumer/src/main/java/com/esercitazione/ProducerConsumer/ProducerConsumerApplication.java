@@ -1,4 +1,4 @@
-package com.esercitazione.ProducerConsumer;
+package com.Esercitazione.ProducerConsumer;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
