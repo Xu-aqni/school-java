@@ -1,5 +1,6 @@
 package com.Esercitazione.ProducerConsumer.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
@@ -44,29 +45,20 @@ public class ProductRestController {
         return ResponseEntity.ok(product);
     }
 
-    // GET /api/products/category/Computers
-    @GetMapping("/category/{category}")
-    public ResponseEntity<List<ProductResponse>> getProductsByCategory(
-            @PathVariable String category) {
-
-        return ResponseEntity.ok(service.getProductByCategory(category));
-    }
-
-    // GET /api/products/search?name=Laptop
+    // GET /api/products/search?name=Laptop&category=Computers&priceOrder=desc
     @GetMapping("/search")
-    public ResponseEntity<List<ProductResponse>> getProductsByName(
-            @RequestParam String name) {
-
-        return ResponseEntity.ok(service.getProductByName(name));
-    }
-
-    // GET /api/products/sorted-by-price
-    @GetMapping("/sorted-by-price")
-    public ResponseEntity<List<ProductResponse>> getAllProductsByOrderByPriceDesc() {
+    public ResponseEntity<List<ProductResponse>> searchProducts(
+            @RequestParam(required = false) Long id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String priceOrder) {
 
         return ResponseEntity.ok(
-                service.getAllProductByOrderByPriceDesc()
-        );
+                service.searchProducts(
+                        id,
+                        name,
+                        category,
+                        priceOrder));
     }
 
     // POST /api/products

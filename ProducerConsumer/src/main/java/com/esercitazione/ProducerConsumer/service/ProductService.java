@@ -1,9 +1,12 @@
 package com.Esercitazione.ProducerConsumer.service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+import org.springframework.data.domain.Sort;
 
 import com.Esercitazione.ProducerConsumer.dto.ProductRequest;
 import com.Esercitazione.ProducerConsumer.dto.ProductResponse;
@@ -35,26 +38,31 @@ public class ProductService {
         return toResponse(product);
     }
 
-    public List<ProductResponse> getProductByCategory(String category) {
-        return repository.findByCategory(category)
-                .stream()
-                .map(this::toResponse)
-                .toList();
+    public List<ProductResponse> searchProducts(
+        Long id,
+        String name,
+        String category,
+        String priceOrder) {
+
+    String checkedName = StringUtils.hasText(name) ? name.trim() : null;
+    String checkedCategory = StringUtils.hasText(category) ? category.trim() : null;
+
+    Sort.Direction direction = Sort.Direction.ASC;
+
+    if ("desc".equalsIgnoreCase(priceOrder)) {
+        direction = Sort.Direction.DESC;
     }
 
-    public List<ProductResponse> getProductByName(String name) {
-        return repository.findByName(name)
-                .stream()
-                .map(this::toResponse)
-                .toList();
-    }
-
-    public List<ProductResponse> getAllProductByOrderByPriceDesc() {
-        return repository.findAllByOrderByPriceDesc()
-                .stream()
-                .map(this::toResponse)
-                .toList();
-    }
+    return repository.searchProducts(
+            id,
+            checkedName,
+            checkedCategory,
+            Sort.by(direction, "price")
+    )
+    .stream()
+    .map(this::toResponse)
+    .toList();
+}
 
     @Transactional
     public ProductResponse createProduct(ProductRequest request) {
