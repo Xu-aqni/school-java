@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ProducerConsumerApplication",
+            "request": "launch",
+            "mainClass": "com.Esercitazione.ProducerConsumer.ProducerConsumerApplication",
+            "projectName": "ProducerConsumer"
+        },
+        {
+            "type": "java",
             "name": "QuizStoriaApplication",
             "request": "launch",
             "mainClass": "com.esercitazione.quizStoria.QuizStoriaApplication",

@@ -5,90 +5,143 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.Esercitazione.ProducerConsumer.dto.ProductRequest;
+import com.Esercitazione.ProducerConsumer.dto.ProductResponse;
+import com.Esercitazione.ProducerConsumer.exception.ProductNotFoundException;
 import com.Esercitazione.ProducerConsumer.model.Product;
 import com.Esercitazione.ProducerConsumer.repository.ProductRepository;
 
 @Service
 @Transactional(readOnly = true)
 public class ProductService {
+
     private final ProductRepository repository;
 
     public ProductService(ProductRepository repository) {
         this.repository = repository;
     }
 
-    public List<Product> getAllProducts() {
-        return repository.findAll();
+    public List<ProductResponse> getAllProducts() {
+        return repository.findAll()
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    public Product getProductById(Long id) {
-        return repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product with id: '" + id + "' not found"));
+    public ProductResponse getProductById(Long id) {
+        Product product = repository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+
+        return toResponse(product);
     }
 
-    public List<Product> getProductByCategory(String category) {
-        return repository.findByCategory(category);
+    public List<ProductResponse> getProductByCategory(String category) {
+        return repository.findByCategory(category)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    public List<Product> getProductByName(String name) {
-        return repository.findByName(name);
+    public List<ProductResponse> getProductByName(String name) {
+        return repository.findByName(name)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
-    public List<Product> getAllProductByOrderByPriceDesc() {
-        return repository.findAllByOrderByPriceDesc();
+    public List<ProductResponse> getAllProductByOrderByPriceDesc() {
+        return repository.findAllByOrderByPriceDesc()
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     @Transactional
-    public Product createProduct(Product product) {
-        if (product.getName() == null || product.getName().trim().isEmpty()) {
+    public ProductResponse createProduct(ProductRequest request) {
+
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("The product must have a name");
         }
-        if (product.getPrice() == null) {
+
+        if (request.getPrice() == null) {
             throw new IllegalArgumentException("The product must have a price");
         }
-        if (product.getCategory() == null || product.getCategory().trim().isEmpty()) {
+
+        if (request.getCategory() == null || request.getCategory().trim().isEmpty()) {
             throw new IllegalArgumentException("The product must have a category");
+        }
+
+        Product product = new Product();
+
+        product.setName(request.getName());
+        product.setDescription(request.getDescription());
+        product.setPrice(request.getPrice());
+        product.setCategory(request.getCategory());
+
+        if (request.getQuantity() != null) {
+            product.setQuantity(request.getQuantity());
         }
 
         Product savedProduct = repository.save(product);
 
-        return savedProduct;
+        return toResponse(savedProduct);
     }
 
     @Transactional
-    public Product updateProduct(Long id, Product newProduct) {
-        Product updatingProduct = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product with id: '" + id + "' not found"));
+    public ProductResponse updateProduct(Long id, ProductRequest request) {
 
-        if (newProduct.getName() == null || newProduct.getName().trim().isEmpty()) {
+        Product updatingProduct = repository.findById(id)
+                .orElseThrow(() -> new ProductNotFoundException(id));
+
+        if (request.getName() == null || request.getName().trim().isEmpty()) {
             throw new IllegalArgumentException("The product must have a name");
         }
-        if (newProduct.getPrice() == null) {
+
+        if (request.getPrice() == null) {
             throw new IllegalArgumentException("The product must have a price");
         }
-        if (newProduct.getCategory() == null || newProduct.getCategory().trim().isEmpty()) {
+
+        if (request.getCategory() == null || request.getCategory().trim().isEmpty()) {
             throw new IllegalArgumentException("The product must have a category");
         }
-        if (newProduct.getQuantity() == null) {
+
+        if (request.getQuantity() == null) {
             throw new IllegalArgumentException("The product must have a quantity");
         }
 
-        updatingProduct.setName(newProduct.getName());
-        updatingProduct.setDescription(newProduct.getDescription());
-        updatingProduct.setPrice(newProduct.getPrice());
-        updatingProduct.setCategory(newProduct.getCategory());
-        updatingProduct.setQuantity(newProduct.getQuantity());
-        
+        updatingProduct.setName(request.getName());
+        updatingProduct.setDescription(request.getDescription());
+        updatingProduct.setPrice(request.getPrice());
+        updatingProduct.setCategory(request.getCategory());
+        updatingProduct.setQuantity(request.getQuantity());
 
-        return repository.save(updatingProduct);
+        Product savedProduct = repository.save(updatingProduct);
+
+        return toResponse(savedProduct);
     }
 
     @Transactional
     public void deleteProduct(Long id) {
+
         if (!repository.existsById(id)) {
-            throw new IllegalArgumentException("Product with id: '" + id + "' not found");
+            throw new ProductNotFoundException(id);
         }
 
         repository.deleteById(id);
+    }
+
+    private ProductResponse toResponse(Product product) {
+
+        ProductResponse response = new ProductResponse();
+
+        response.setId(product.getId());
+        response.setName(product.getName());
+        response.setDescription(product.getDescription());
+        response.setPrice(product.getPrice());
+        response.setCategory(product.getCategory());
+        response.setQuantity(product.getQuantity());
+        response.setCreationDate(product.getCreationDate());
+
+        return response;
     }
 }
