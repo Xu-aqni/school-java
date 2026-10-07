@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.Esercitazione.ProducerConsumer.dto.ProductRequest;
@@ -39,30 +41,34 @@ public class ProductService {
     }
 
     public List<ProductResponse> searchProducts(
-        Long id,
-        String name,
-        String category,
-        String priceOrder) {
+            Long id,
+            String name,
+            String category,
+            String priceOrder) {
 
-    String checkedName = StringUtils.hasText(name) ? name.trim() : null;
-    String checkedCategory = StringUtils.hasText(category) ? category.trim() : null;
+        String checkedName = StringUtils.hasText(name) ? name.trim() : null;
+        String checkedCategory = StringUtils.hasText(category) ? category.trim() : null;
 
-    Sort.Direction direction = Sort.Direction.ASC;
+        Sort.Direction direction = Sort.Direction.ASC;
 
-    if ("desc".equalsIgnoreCase(priceOrder)) {
-        direction = Sort.Direction.DESC;
+        if ("desc".equalsIgnoreCase(priceOrder)) {
+            direction = Sort.Direction.DESC;
+        }
+
+        Pageable pageable = PageRequest.of(
+                0,
+                Integer.MAX_VALUE,
+                Sort.by(direction, "price"));
+
+        return repository.searchProducts(
+                id,
+                checkedName,
+                checkedCategory,
+                pageable)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
-
-    return repository.searchProducts(
-            id,
-            checkedName,
-            checkedCategory,
-            Sort.by(direction, "price")
-    )
-    .stream()
-    .map(this::toResponse)
-    .toList();
-}
 
     @Transactional
     public ProductResponse createProduct(ProductRequest request) {

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Products</h1>
+
+        <div class="search-box">
+
+            <form th:action="@{/products}" method="get">
+
+                <input type="text" name="name" placeholder="Search by name" th:value="${name}">
+
+                <input type="text" name="category" placeholder="Category" th:value="${category}">
+
+                <select name="priceOrder">
+                    <option value="">No sorting</option>
+                    <option value="asc" th:selected="${priceOrder == 'asc'}">
+                        Price: Low → High
+                    </option>
+                    <option value="desc" th:selected="${priceOrder == 'desc'}">
+                        Price: High → Low
+                    </option>
+                </select>
+
+                <button type="submit">Search</button>
+
+            </form>
+
+        </div>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr th:each="product : ${products}">
+
+                    <td th:text="${product.id}">
+                        1
+                    </td>
+
+                    <td>
+                        <a th:href="@{/products/{id}(id=${product.id})}" th:text="${product.name}">
+                            Laptop Pro 15
+                        </a>
+                    </td>
+
+                    <td th:text="${product.category}">
+                        Computers
+                    </td>
+
+                    <td th:text="${'€ ' + product.price}">
+                        € 1299.90
+                    </td>
+
+                    <td th:text="${product.quantity}">
+                        15
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</body>
+
+</html>

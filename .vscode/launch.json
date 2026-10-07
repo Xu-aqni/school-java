@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "ProductClientApplication",
+            "request": "launch",
+            "mainClass": "com.Esercitazione.ProductClient.ProductClientApplication",
+            "projectName": "ProductClient"
+        },
+        {
+            "type": "java",
+            "name": "ProductClientApplication",
+            "request": "launch",
+            "mainClass": "ProductClientApplication",
+            "projectName": ""
+        },
+        {
+            "type": "java",
             "name": "ProducerConsumerApplication",
             "request": "launch",
             "mainClass": "com.Esercitazione.ProducerConsumer.ProducerConsumerApplication",
