@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:15-alpine
@@ -10,9 +12,10 @@ services:
       - "5432:5432"
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
 
   producer:
-    build: ./ProducerApplication
+    image: xuaqni/producer-api:1.0
     container_name: esercitazione-producer
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/esercitazione_api
@@ -24,7 +27,7 @@ services:
       - db
 
   consumer:
-    build: ./ConsumerApplication
+    image: xuaqni/consumer-web:1.0
     container_name: esercitazione-consumer
     environment:
       PRODUCER_URL: http://producer:8081
