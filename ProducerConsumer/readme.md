@@ -97,7 +97,7 @@ Per compilare ed eseguire le applicazioni in locale, senza Docker (opzionale):
 Una volta che i container sono in esecuzione, puoi accedere ai servizi:
 
 * **Applicazione Web Consumer:** Apri il browser web e vai su: `http://localhost:8082/products`
-* **API REST Producer:** L'API è disponibile all'indirizzo `http://localhost:8081/api`. Puoi utilizzare strumenti come `curl` o Postman per interagire con essa.
+* **API REST Producer:** L'API è disponibile all'indirizzo `http://localhost:8081/api/products`. Puoi utilizzare strumenti come `curl` o Postman per interagire con essa.
 
 ---
 
