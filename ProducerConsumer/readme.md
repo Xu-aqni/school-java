@@ -1,5 +1,9 @@
 # Applicazione Producer-Consumer
 
+**Sviluppatore**
+
+* `Anqi Xu`
+
 **AI utilizzate (percentuale di utilizzo):**
 
 * `<Gemini 30%>`
