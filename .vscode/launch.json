@@ -2,6 +2,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "com.echoeswars.Main",
+            "projectName": "engine"
+        },
+        {
+            "type": "java",
+            "name": "App",
+            "request": "launch",
+            "mainClass": "com.echoeswars.App",
+            "projectName": "engine"
+        },
+        {
+            "type": "java",
             "name": "ProducerConsumerApplication",
             "request": "launch",
             "mainClass": "ProducerConsumerApplication",
